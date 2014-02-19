@@ -8,6 +8,7 @@ Created on Tue Feb 18 11:20:55 2014
 import mysql.connector
 from cache import university_locations, university_ids, thesis_ids, descriptors
 import networkx as nx
+import sys
 
 config = {
       'user': 'foo',
@@ -141,23 +142,24 @@ def create_region_temporal_evolution_by_year():
     
 def create_area_temporal_evolution_by_year():
     cnx = mysql.connector.connect(**config)
+    cnx2 = mysql.connector.connect(**config)
     cursor = cnx.cursor()
     query = 'SELECT id, defense_date from thesis'
     cursor.execute(query)
     results = {2000:{u'DEUSTO':0}}
-    for i, thesis in enumerate(cursor):
-        print 'temporal', i            
-        
+    for i, thesis in enumerate(cursor):         
         try:
             thesis_id = thesis[0]
             year = thesis[1].year
+            print 'Processing', thesis_id, ', year', year
             
-            #get descriptors
-            cursor_desc = cnx.cursor()
-            query = 'SELECT descriptor_id FROM association_thesis_description WHERE thesis_id=' + str(thesis_id)
-            cursor_desc.execute(query)
+            #get descriptors   
+            cursor_desc = cnx2.cursor()
+            query_desc = 'SELECT descriptor_id FROM association_thesis_description WHERE thesis_id=' + str(thesis_id)      
+            cursor_desc.execute(query_desc)
+            
             used_descriptors = []
-            for desc in cursor2:
+            for desc in cursor_desc:
                 used_descriptors.append(desc[0])          
             cursor_desc.close()
             
@@ -176,8 +178,10 @@ def create_area_temporal_evolution_by_year():
                     decriptor_text = descriptors[descriptor_id]
                     descs[decriptor_text] = 1                
                 results[year] = descs
-        except:
-            print 'undefined date'
+        except AttributeError:
+            print 'The thesis has no year in the database'
+        except mysql.connector.errors.InternalError as ie:
+            print 'Mysql error', ie.msg
     cursor.close()
     return results
     
@@ -214,6 +218,6 @@ def create_area_temporal_evolution_by_year():
     
 if __name__=='__main__':
     print 'start'
-    print create_area_temporal_evolution_by_year
+    print create_area_temporal_evolution_by_year()
     print 'done'
 
