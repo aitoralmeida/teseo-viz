@@ -7,6 +7,8 @@ Created on Tue Feb 18 11:29:20 2014
 
 import pickle
 import gender
+import difflib
+import itertools
 
 
 def load_config():
@@ -131,10 +133,40 @@ def load_descriptors():
         result = pickle.load(infile)
     return result
     
-def load_genders):
+def load_genders():
     with open( "genders.p", "rb" ) as infile:
         result = pickle.load(infile)
     return result
+    
+def get_complete_names():
+    import mysql.connector   
+    config = load_config()
+    cnx = mysql.connector.connect(**config)
+    cursor = cnx.cursor()
+    cursor.execute("SELECT DISTINCT(name) FROM person")
+    result = []
+    for name in cursor:
+        result.append(name[0])
+    cursor.close()
+    return result
+    
+def check_similar_names():
+    names = get_names()
+    # min similarity ratio between strings
+    threshold_ratio = 0.9
+    repeated = []    
+    
+    for str_1, str_2 in itertools.combinations(names, 2):
+        if (difflib.SequenceMatcher(None, str_1, str_2).ratio() > threshold_ratio):
+            print 'Similar', str_1, str_2
+            repeated.append((str_1, str_2))
+            
+    return repeated
+            
+
+
+            
+    
 
 
 
@@ -149,7 +181,7 @@ thesis_ids = load_thesis_ids()
 
 descriptors = load_descriptors()
 
-name_genders = load_genders
+name_genders = load_genders()
 
 university_locations = {
     u'SANTIAGO DE COMPOSTELA':u'Galicia',
@@ -314,7 +346,7 @@ university_ids = {
 
 #this should be done the first time running this scripts    
 if __name__=='__main__':
-    print save_name_genders()
+    print check_similar_names()
     print 'done'
     
 
