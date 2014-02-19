@@ -48,8 +48,8 @@ def save_thesis_ids():
     cursor = cnx.cursor()
     cursor.execute("SELECT id FROM thesis")
     result = set()
-    for id in cursor:
-        result.add(id[0])
+    for thesis_id in cursor:
+        result.add(thesis_id[0])
     cursor.close()
     
     with open( "thesis_ids.p", "wb" ) as outfile:
@@ -59,9 +59,38 @@ def load_thesis_ids():
     with open( "thesis_ids.p", "rb" ) as infile:
         result = pickle.load(infile)
     return result
+    
+def save_descriptors():
+    import mysql.connector   
+    config = load_config()
+    cnx = mysql.connector.connect(**config)
+    cursor = cnx.cursor()
+    cursor.execute("SELECT id, text FROM descriptor")
+    result = {}
+    for descriptor in cursor:
+        result[descriptor[0]] = descriptor[1]
+    cursor.close()
+    
+    with open( "descriptors.p", "wb" ) as outfile:
+        pickle.dump(result, outfile)
+
+def load_descriptors():
+    with open( "descriptors.p", "rb" ) as infile:
+        result = pickle.load(infile)
+    return result
+
+
+
+
+
+
+
+####################DATA#############################
+
 
 thesis_ids = load_thesis_ids()
 
+descriptors = load_descriptors()
 
 university_locations = {
     u'SANTIAGO DE COMPOSTELA':u'Galicia',
@@ -227,6 +256,7 @@ university_ids = {
 #this should be done the first time running this scripts    
 if __name__=='__main__':
     save_thesis_ids()
+    save_descriptors()
     print 'done'
     
 
