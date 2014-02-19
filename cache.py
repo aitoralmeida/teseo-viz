@@ -6,6 +6,7 @@ Created on Tue Feb 18 11:29:20 2014
 """
 
 import pickle
+import gender
 
 
 def load_config():
@@ -73,6 +74,57 @@ def save_descriptors():
     
     with open( "descriptors.p", "wb" ) as outfile:
         pickle.dump(result, outfile)
+        
+def get_names():
+    import mysql.connector   
+    config = load_config()
+    cnx = mysql.connector.connect(**config)
+    cursor = cnx.cursor()
+    cursor.execute("SELECT DISTINCT(first_name) FROM person")
+    result = set()
+    for name in cursor:
+        first = str(name[0]).split(' ')[0]
+        result.add(first)
+    cursor.close()
+        
+    return list(result)
+    
+def save_name_genders():
+    name_pool = get_names()
+        
+    result = {}
+    bad_names = []
+    
+    chunk_size = 50
+    total_chunks = len(name_pool)/chunk_size
+    rest = len(name_pool)%chunk_size    
+    
+    for j in range(0, total_chunks):
+        print '*******Chunk', j, '/', total_chunks
+        names = []
+        if j == total_chunks - 1:
+            names = name_pool[j * chunk_size:total_chunks*chunk_size+rest]
+        else:
+            names = name_pool[j * chunk_size:(j+1)*chunk_size]
+        
+        gender_list = gender.getGenders(names) #gender, prob, count        
+        
+        for i, name in enumerate(names):
+            infered_gender = gender_list[i][0]
+            prob = float(gender_list[i][1])
+            print name, infered_gender, prob
+            if infered_gender == 'None' or prob < 0.6: 
+                bad_names.append(name)
+            result[name] = infered_gender
+        
+    with open( "genders.p", "wb" ) as outfile:
+        pickle.dump(result, outfile) 
+        
+    with open( "badnames.p", "wb" ) as outfile:
+        pickle.dump(bad_names, outfile) 
+    
+    return bad_names
+    
 
 def load_descriptors():
     with open( "descriptors.p", "rb" ) as infile:
@@ -255,8 +307,7 @@ university_ids = {
 
 #this should be done the first time running this scripts    
 if __name__=='__main__':
-    save_thesis_ids()
-    save_descriptors()
+    print save_name_genders()
     print 'done'
     
 
