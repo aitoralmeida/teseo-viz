@@ -224,7 +224,7 @@ university_ids = {
 
 
 
-    
+#this should be done the first time running this scripts    
 if __name__=='__main__':
     save_thesis_ids()
     print 'done'
