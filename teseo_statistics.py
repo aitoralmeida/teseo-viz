@@ -6,9 +6,10 @@ Created on Tue Feb 18 11:20:55 2014
 """
 
 import mysql.connector
-from cache import university_locations, university_ids, thesis_ids, descriptors
+from cache import university_locations, university_ids, thesis_ids, descriptors, name_genders
 import networkx as nx
 import sys
+import requests
 
 config = {
       'user': 'foo',
@@ -116,8 +117,8 @@ def create_university_temporal_evolution_by_year():
                     unis[university] = 1            
             else:
                 results[year] = {university:1}
-        except:
-            print 'undefined date or university'
+         except AttributeError:
+            print 'The thesis has no year in the database'
     cursor.close()
     return results
     
@@ -184,6 +185,13 @@ def create_area_temporal_evolution_by_year():
             print 'Mysql error', ie.msg
     cursor.close()
     return results
+    
+    
+    #http://api.genderize.io/?name=aitor
+    
+
+    
+    
     
     
     

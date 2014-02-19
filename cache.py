@@ -130,6 +130,11 @@ def load_descriptors():
     with open( "descriptors.p", "rb" ) as infile:
         result = pickle.load(infile)
     return result
+    
+def load_genders):
+    with open( "genders.p", "rb" ) as infile:
+        result = pickle.load(infile)
+    return result
 
 
 
@@ -143,6 +148,8 @@ def load_descriptors():
 thesis_ids = load_thesis_ids()
 
 descriptors = load_descriptors()
+
+name_genders = load_genders
 
 university_locations = {
     u'SANTIAGO DE COMPOSTELA':u'Galicia',
