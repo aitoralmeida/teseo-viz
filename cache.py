@@ -8,7 +8,7 @@ Created on Tue Feb 18 11:29:20 2014
 import pickle
 import gender
 import difflib
-import itertools
+import math
 
 
 def load_config():
@@ -151,15 +151,27 @@ def get_complete_names():
     return result
     
 def check_similar_names():
-    names = get_names()
+    print 'Getting names'
+    names = get_complete_names()
+    print 'Total names:', len(names)
     # min similarity ratio between strings
-    threshold_ratio = 0.9
+    threshold_ratio = 0.8
     repeated = []    
+    count = 0.0
     
-    for str_1, str_2 in itertools.combinations(names, 2):
-        if (difflib.SequenceMatcher(None, str_1, str_2).ratio() > threshold_ratio):
-            print 'Similar', str_1, str_2
-            repeated.append((str_1, str_2))
+    for i, str_1 in enumerate(names):
+        for j in range(i+1, len(names)): 
+            if count%10000 == 0:
+                print 'Similar', count
+            count+=1
+            str_2 = names[j]
+            
+            if (difflib.SequenceMatcher(None, str_1, str_2).ratio() > threshold_ratio):
+                print 'Similar', str_1, str_2
+                repeated.append((str_1, str_2))
+    
+    with open( "repeated.p", "wb" ) as outfile:
+        result = pickle.dump(outfile)
             
     return repeated
             
