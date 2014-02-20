@@ -77,6 +77,11 @@ def save_descriptors():
     with open( "descriptors.p", "wb" ) as outfile:
         pickle.dump(result, outfile)
         
+def load_descriptors():
+    with open( "descriptors.p", "rb" ) as infile:
+        result = pickle.load(infile)
+    return result
+        
 def get_names():
     import mysql.connector   
     config = load_config()
@@ -126,13 +131,7 @@ def save_name_genders():
         pickle.dump(bad_names, outfile) 
     
     return bad_names
-    
-
-def load_descriptors():
-    with open( "descriptors.p", "rb" ) as infile:
-        result = pickle.load(infile)
-    return result
-    
+       
 def load_genders():
     with open( "genders.p", "rb" ) as infile:
         result = pickle.load(infile)

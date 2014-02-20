@@ -78,8 +78,8 @@ def build_panel_relations():
     print 'Graph created'
     print '-Nodes:',len(G.nodes())
     print '-Edges:',len(G.edges())
-    print 'Writing file'
-    nx.write_gexf(G, 'panel_relations.gexf')
+    
+    return G
     
 #the graph is too big. Nodes with not enough degree are deleted
 #If a node has a degree of 4 or less it only has been in the panel of 1 viva
@@ -251,6 +251,25 @@ def create_gender_temporal_evolution_by_year():
     
     
 if __name__=='__main__':
+    #create the thesis panel social network
+    #G = build_panel_relations()
+    #filter_panel_relations(G)
+    #print 'Writing file'
+    #nx.write_gexf(G, 'panel_relations.gexf')
+
+    #Create the temporal evolution of the universities
+    #create_university_temporal_evolution_by_year()
+    
+    #Create the temporal evolution of the geoprahpical regions
+    #create_region_temporal_evolution_by_year()
+    
+    #Create the temporal evolution of the knowledge areas
+    #create_area_temporal_evolution_by_year()
+    
+    #Create the temporal evolution of the author genders
+    #create_gender_temporal_evolution_by_year()
+    
+    
     print 'start'
     print create_gender_temporal_evolution_by_year()
     print 'done'
