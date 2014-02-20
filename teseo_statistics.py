@@ -199,7 +199,7 @@ def create_gender_temporal_evolution_by_year():
         print 'temporal', i            
         
         try:
-            name = str(thesis[0]).split(' ')[0] #if is a composed name we use only the first part to identify the gender
+            name = str(thesis[0]).split(' ')[0] #if it is a composed name we use only the first part to identify the gender
             
             try:
                 gender = name_genders[name]
@@ -247,30 +247,30 @@ if __name__=='__main__':
     print 'Temporal evolution of the universities'
     unis = create_university_temporal_evolution_by_year()
     pp.pprint(unis)
-    json.dump(unis, open('./data/universities_temporal.json', 'w'))
+    json.dump(unis, open('./data/universities_temporal.json', 'w'), indent = 4)
  
     #Create the temporal evolution of the geoprahpical regions
     print 'Temporal evolution of the geoprahpical regions'
     regions = create_region_temporal_evolution_by_year()
     pp.pprint(regions)
-    json.dump(regions, open('./data/regions_temporal.json', 'w'))
+    json.dump(regions, open('./data/regions_temporal.json', 'w'), indent = 4)
     
     #Create the temporal evolution of the knowledge areas
     print 'Temporal evolution of the knowledge areas'
     areas = create_area_temporal_evolution_by_year()
     pp.pprint(areas)
-    json.dump(areas, open('./data/areas_temporal.json', 'w'))
+    json.dump(areas, open('./data/areas_temporal.json', 'w'), indent = 4)
     
     #Create the temporal evolution of the author genders
     print 'Temporal evolution of the author genders'
     genders_total = create_gender_temporal_evolution_by_year()
     pp.pprint(genders_total)
-    json.dump(genders_total, open('./data/genders_total.json', 'w'))
+    json.dump(genders_total, open('./data/genders_total.json', 'w'), indent = 4)
     
     #Create the temporal evolution of gender percentage
     print 'Temporal evolution of gender percentage'
     genders_percentage = create_gender_percentaje_evolution(genders_total)
     pp.pprint(genders_percentage)
-    json.dump(genders_percentage, open('./data/genders_percentage.json', 'w'))
+    json.dump(genders_percentage, open('./data/genders_percentage.json', 'w'), indent = 4)
     
 
