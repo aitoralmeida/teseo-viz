@@ -9,7 +9,8 @@ import mysql.connector
 from cache import university_locations, university_ids, thesis_ids, descriptors, name_genders
 import networkx as nx
 import sys
-import requests
+import pprint
+import json
 
 config = {
       'user': 'foo',
@@ -119,6 +120,8 @@ def create_university_temporal_evolution_by_year():
                 results[year] = {university:1}
         except AttributeError:
             print 'The thesis has no year in the database'
+        except KeyError:
+            print 'Unkown university:', thesis[0]
     cursor.close()
     return results
     
@@ -191,7 +194,7 @@ def create_gender_temporal_evolution_by_year():
     cursor = cnx.cursor()
     query = 'SELECT person.first_name, thesis.author_id, thesis.defense_date FROM thesis, person WHERE thesis.author_id = person.id'
     cursor.execute(query)
-    results = {2000:{u'DEUSTO':0}}
+    results = {}
     for i, thesis in enumerate(cursor):
         print 'temporal', i            
         
@@ -215,39 +218,20 @@ def create_gender_temporal_evolution_by_year():
             print 'The thesis has no year in the database'
     cursor.close()
     return results
-
     
+def create_gender_percentaje_evolution(gender_temp):
+    result= {}
+    for year in gender_temp:
+        try:
+            total_year = float(gender_temp[year]['female'] + gender_temp[year]['male'])
+            female_perc = gender_temp[year]['female']/total_year
+            male_perc = gender_temp[year]['male']/total_year
+            result[year] = {'female':female_perc, 'male':male_perc}
+        except:
+            pass
+    return result
     
-    
-    
-    
-#def create_temporal_evolution_by_uni():
-#    cnx = mysql.connector.connect(**config)
-#    cursor = cnx.cursor()
-#    query = 'SELECT university_id, defense_date from thesis'
-#    cursor.execute(query)
-#    results = {2000:{u'DEUSTO':0}}
-#    for i, thesis in enumerate(cursor):
-#        print 'temporal', i            
-#        try:
-#            university = university_ids[thesis[0]]
-#            year = thesis[1].year
-#            if year in results.keys():
-#                unis = results[year]
-#                if university in unis.keys():
-#                    unis[university] += 1
-#                else:
-#                    unis[university] = 1            
-#            else:
-#                results[year] = {university:1}
-#        except:
-#            print 'undefined date or university'
-#    cursor.close()
-#    return results
-#    
-    
-
-        
+            
     
     
 if __name__=='__main__':
@@ -258,19 +242,34 @@ if __name__=='__main__':
     #nx.write_gexf(G, 'panel_relations.gexf')
 
     #Create the temporal evolution of the universities
-    #create_university_temporal_evolution_by_year()
+    pp = pprint.PrettyPrinter(indent=4)
+    unis = create_university_temporal_evolution_by_year()
+    pp.pprint(unis)
+    json.dump(unis, open('universities_temporal.json', 'w'))
+    
     
     #Create the temporal evolution of the geoprahpical regions
-    #create_region_temporal_evolution_by_year()
+    #print create_region_temporal_evolution_by_year()
     
     #Create the temporal evolution of the knowledge areas
-    #create_area_temporal_evolution_by_year()
+    #print create_area_temporal_evolution_by_year()
     
     #Create the temporal evolution of the author genders
-    #create_gender_temporal_evolution_by_year()
+    #print create_gender_temporal_evolution_by_year()
+    
+    #Create the temporal evolution of gender percentage
+#    pp = pprint.PrettyPrinter(indent=4)
+#    gender_temp = create_gender_temporal_evolution_by_year()
+#    pp.pprint(gender_temp)
+#    percentage = create_gender_percentaje_evolution(gender_temp)
+#    pp.pprint(percentage)
     
     
-    print 'start'
-    print create_gender_temporal_evolution_by_year()
-    print 'done'
+#    print 'start'
+#    pp = pprint.PrettyPrinter(indent=4)
+#    gender_temp = create_gender_temporal_evolution_by_year()
+#    pp.pprint(gender_temp)
+#    percentage = create_gender_percentaje_evolution(gender_temp)
+#    pp.pprint(percentage)
+#    print 'done'
 
