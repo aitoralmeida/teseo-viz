@@ -235,6 +235,8 @@ def create_gender_percentaje_evolution(gender_temp):
     
     
 if __name__=='__main__':
+    pp = pprint.PrettyPrinter(indent=4)    
+    
     #create the thesis panel social network
     #G = build_panel_relations()
     #filter_panel_relations(G)
@@ -242,34 +244,33 @@ if __name__=='__main__':
     #nx.write_gexf(G, 'panel_relations.gexf')
 
     #Create the temporal evolution of the universities
-    pp = pprint.PrettyPrinter(indent=4)
+    print 'Temporal evolution of the universities'
     unis = create_university_temporal_evolution_by_year()
     pp.pprint(unis)
-    json.dump(unis, open('universities_temporal.json', 'w'))
-    
-    
+    json.dump(unis, open('./data/universities_temporal.json', 'w'))
+ 
     #Create the temporal evolution of the geoprahpical regions
-    #print create_region_temporal_evolution_by_year()
+    print 'Temporal evolution of the geoprahpical regions'
+    regions = create_region_temporal_evolution_by_year()
+    pp.pprint(regions)
+    json.dump(regions, open('./data/regions_temporal.json', 'w'))
     
     #Create the temporal evolution of the knowledge areas
-    #print create_area_temporal_evolution_by_year()
+    print 'Temporal evolution of the knowledge areas'
+    areas = create_area_temporal_evolution_by_year()
+    pp.pprint(areas)
+    json.dump(areas, open('./data/areas_temporal.json', 'w'))
     
     #Create the temporal evolution of the author genders
-    #print create_gender_temporal_evolution_by_year()
+    print 'Temporal evolution of the author genders'
+    genders_total = create_gender_temporal_evolution_by_year()
+    pp.pprint(genders_total)
+    json.dump(genders_total, open('./data/genders_total.json', 'w'))
     
     #Create the temporal evolution of gender percentage
-#    pp = pprint.PrettyPrinter(indent=4)
-#    gender_temp = create_gender_temporal_evolution_by_year()
-#    pp.pprint(gender_temp)
-#    percentage = create_gender_percentaje_evolution(gender_temp)
-#    pp.pprint(percentage)
+    print 'Temporal evolution of gender percentage'
+    genders_percentage = create_gender_percentaje_evolution(genders_total)
+    pp.pprint(genders_percentage)
+    json.dump(genders_percentage, open('./data/genders_percentage.json', 'w'))
     
-    
-#    print 'start'
-#    pp = pprint.PrettyPrinter(indent=4)
-#    gender_temp = create_gender_temporal_evolution_by_year()
-#    pp.pprint(gender_temp)
-#    percentage = create_gender_percentaje_evolution(gender_temp)
-#    pp.pprint(percentage)
-#    print 'done'
 
