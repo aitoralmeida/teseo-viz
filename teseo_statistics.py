@@ -117,7 +117,7 @@ def create_university_temporal_evolution_by_year():
                     unis[university] = 1            
             else:
                 results[year] = {university:1}
-         except AttributeError:
+        except AttributeError:
             print 'The thesis has no year in the database'
     cursor.close()
     return results
@@ -147,7 +147,7 @@ def create_area_temporal_evolution_by_year():
     cursor = cnx.cursor()
     query = 'SELECT id, defense_date from thesis'
     cursor.execute(query)
-    results = {2000:{u'DEUSTO':0}}
+    results = {}
     for i, thesis in enumerate(cursor):         
         try:
             thesis_id = thesis[0]
@@ -186,9 +186,35 @@ def create_area_temporal_evolution_by_year():
     cursor.close()
     return results
     
-    
-    #http://api.genderize.io/?name=aitor
-    
+def create_gender_temporal_evolution_by_year():
+    cnx = mysql.connector.connect(**config)
+    cursor = cnx.cursor()
+    query = 'SELECT person.first_name, thesis.author_id, thesis.defense_date FROM thesis, person WHERE thesis.author_id = person.id'
+    cursor.execute(query)
+    results = {2000:{u'DEUSTO':0}}
+    for i, thesis in enumerate(cursor):
+        print 'temporal', i            
+        
+        try:
+            name = str(thesis[0]).split(' ')[0] #if is a composed name we use only the first part to identify the gender
+            
+            try:
+                gender = name_genders[name]
+            except KeyError:
+                gender = 'None'
+            year = thesis[2].year            
+            if year in results.keys():
+                genders = results[year]
+                if gender in genders.keys():
+                    genders[gender] += 1
+                else:
+                    genders[gender] = 1            
+            else:
+                results[year] = {gender:1}
+        except AttributeError:
+            print 'The thesis has no year in the database'
+    cursor.close()
+    return results
 
     
     
@@ -226,6 +252,6 @@ def create_area_temporal_evolution_by_year():
     
 if __name__=='__main__':
     print 'start'
-    print create_area_temporal_evolution_by_year()
+    print create_gender_temporal_evolution_by_year()
     print 'done'
 
